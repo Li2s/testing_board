@@ -1,0 +1,14 @@
+PWMCapturer.cpp:10:1:PWMCapturer::PWMCapturer(TIM_HandleTypeDef*, uint8_t, uint16_t, uint16_t, uint16_t, uint8_t)	24	static
+PWMCapturer.cpp:40:1:PWMCapturer::PWMCapturer(TIM_HandleTypeDef*, uint8_t, uint16_t, uint16_t, uint8_t)	40	static
+PWMCapturer.cpp:48:1:PWMCapturer::~PWMCapturer()	16	static
+PWMCapturer.cpp:48:1:virtual PWMCapturer::~PWMCapturer()	16	static
+PWMCapturer.cpp:52:10:uint32_t PWMCapturer::getPulseWidth()	16	static
+PWMCapturer.cpp:57:10:uint32_t PWMCapturer::getMaxWidth()	16	static
+PWMCapturer.cpp:62:10:uint32_t PWMCapturer::getMinWidth()	16	static
+PWMCapturer.cpp:67:10:uint32_t PWMCapturer::getMidWidth()	16	static
+PWMCapturer.cpp:72:6:void PWMCapturer::calculatePulseWidth()	16	static
+PWMCapturer.cpp:93:10:uint32_t PWMCapturer::getPulseWidthDif()	16	static
+PWMCapturer.cpp:98:6:bool PWMCapturer::matchMinValue()	16	static
+PWMCapturer.cpp:106:6:bool PWMCapturer::matchMidValue()	16	static
+PWMCapturer.cpp:114:6:bool PWMCapturer::matchMaxValue()	16	static
+PWMCapturer.cpp:122:6:bool PWMCapturer::matchOutOfInterval()	16	static
