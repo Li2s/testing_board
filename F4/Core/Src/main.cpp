@@ -66,9 +66,30 @@ const uint16_t mid_value_ms = 1500;
 const uint16_t max_value_ms = 2013;
 const uint8_t measurement_error = 4;
 
-PWMCapturer channel1 = PWMCapturer(
+PWMCapturer thr = PWMCapturer(
 		&htim3,
 		1,
+		min_value_ms,
+		mid_value_ms,
+		max_value_ms,
+		measurement_error);
+PWMCapturer ail = PWMCapturer(
+		&htim3,
+		2,
+		min_value_ms,
+		mid_value_ms,
+		max_value_ms,
+		measurement_error);
+PWMCapturer elev = PWMCapturer(
+		&htim3,
+		3,
+		min_value_ms,
+		mid_value_ms,
+		max_value_ms,
+		measurement_error);
+PWMCapturer rud = PWMCapturer(
+		&htim3,
+		4,
 		min_value_ms,
 		mid_value_ms,
 		max_value_ms,
@@ -79,7 +100,16 @@ void IcHandlerTim3(TIM_HandleTypeDef *htim)
 	switch ((uint8_t)htim->Channel)
 	{
 		case HAL_TIM_ACTIVE_CHANNEL_1:
-			channel1.calculatePulseWidth();
+			thr.calculatePulseWidth();
+			break;
+		case HAL_TIM_ACTIVE_CHANNEL_2:
+			ail.calculatePulseWidth();
+			break;
+		case HAL_TIM_ACTIVE_CHANNEL_3:
+			elev.calculatePulseWidth();
+			break;
+		case HAL_TIM_ACTIVE_CHANNEL_4:
+			rud.calculatePulseWidth();
 			break;
 	}
 }
@@ -119,14 +149,17 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_RegisterCallback(&htim3, HAL_TIM_IC_CAPTURE_CB_ID, IcHandlerTim3);
   HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
-  char str[10] = "Hello\n";
+  HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_2);
+  HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_3);
+  HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_4);
+  char str[100] = "Hello\n";
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  sprintf(str, "%d", (int)(channel1.getPulseWidth()));
+	  sprintf(str, "%d %d %d %d", (int)(thr.getPulseWidth()), (int)(ail.getPulseWidth()), (int)(elev.getPulseWidth()), (int)(rud.getPulseWidth()));
 	  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
 	  HAL_Delay(500);
     /* USER CODE END WHILE */
@@ -231,6 +264,18 @@ static void MX_TIM3_Init(void)
   {
     Error_Handler();
   }
+  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_4) != HAL_OK)
+  {
+    Error_Handler();
+  }
   /* USER CODE BEGIN TIM3_Init 2 */
 
   /* USER CODE END TIM3_Init 2 */
@@ -281,6 +326,7 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
 }
 
