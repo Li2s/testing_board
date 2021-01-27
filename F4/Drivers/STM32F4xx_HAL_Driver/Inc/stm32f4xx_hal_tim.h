@@ -27,7 +27,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal_def.h"
-
+#define USE_HAL_TIM_REGISTER_CALLBACKS 1
 /** @addtogroup STM32F4xx_HAL_Driver
   * @{
   */

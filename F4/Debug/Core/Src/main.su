@@ -1,10 +1,10 @@
 main.cpp:77:6:void IcHandlerTim3(TIM_HandleTypeDef*)	16	static
 main.cpp:93:5:int main()	24	static
-main.cpp:142:6:void SystemClock_Config()	88	static
-main.cpp:186:13:void MX_TIM3_Init()	48	static
-main.cpp:244:13:void MX_USART1_UART_Init()	8	static
-main.cpp:277:13:void MX_GPIO_Init()	16	static
-main.cpp:294:6:void Error_Handler()	4	static,ignoring_inline_asm
-main.cpp:303:1:void __static_initialization_and_destruction_0(int, int)	32	static
-main.cpp:303:1:cpp)	8	static
-main.cpp:303:1:cpp)	8	static
+main.cpp:143:6:void SystemClock_Config()	88	static
+main.cpp:187:13:void MX_TIM3_Init()	48	static
+main.cpp:245:13:void MX_USART1_UART_Init()	8	static
+main.cpp:278:13:void MX_GPIO_Init()	16	static
+main.cpp:295:6:void Error_Handler()	4	static,ignoring_inline_asm
+main.cpp:304:1:void __static_initialization_and_destruction_0(int, int)	32	static
+main.cpp:304:1:cpp)	8	static
+main.cpp:304:1:cpp)	8	static

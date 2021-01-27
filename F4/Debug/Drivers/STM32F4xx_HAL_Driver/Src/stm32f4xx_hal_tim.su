@@ -82,6 +82,8 @@ stm32f4xx_hal_tim.c:4922:13:HAL_TIM_PWM_PulseFinishedHalfCpltCallback	16	static
 stm32f4xx_hal_tim.c:4937:13:HAL_TIM_TriggerCallback	16	static
 stm32f4xx_hal_tim.c:4952:13:HAL_TIM_TriggerHalfCpltCallback	16	static
 stm32f4xx_hal_tim.c:4967:13:HAL_TIM_ErrorCallback	16	static
+stm32f4xx_hal_tim.c:5013:19:HAL_TIM_RegisterCallback	32	static
+stm32f4xx_hal_tim.c:5256:19:HAL_TIM_UnRegisterCallback	24	static
 stm32f4xx_hal_tim.c:5484:22:HAL_TIM_Base_GetState	16	static
 stm32f4xx_hal_tim.c:5494:22:HAL_TIM_OC_GetState	16	static
 stm32f4xx_hal_tim.c:5504:22:HAL_TIM_PWM_GetState	16	static
@@ -112,3 +114,4 @@ stm32f4xx_hal_tim.c:6496:13:TIM_TI4_SetConfig	32	static
 stm32f4xx_hal_tim.c:6539:13:TIM_ITRx_SetConfig	24	static
 stm32f4xx_hal_tim.c:6569:6:TIM_ETR_SetConfig	32	static
 stm32f4xx_hal_tim.c:6599:6:TIM_CCxChannelCmd	32	static
+stm32f4xx_hal_tim.c:6623:6:TIM_ResetCallback	16	static
