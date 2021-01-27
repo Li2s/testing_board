@@ -100,6 +100,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  char str[] = "Hello\n";
+	  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
+	  HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
