@@ -1,0 +1,47 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+
+.metadata/
+RemoteSystemsTempFiles/
+BUILDS/
+mbed-os/
+ESS/MDK-ARM/ESS/
+Baro/MDK-ARM/Baro/
+[Dd]ebug/ 
+[Rr]elease/ 
+AirSpeed/MDK-ARM/AirSpeed/
+
+# User settings
+*.uvguix.*
+.settings/

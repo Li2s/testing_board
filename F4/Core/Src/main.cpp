@@ -22,7 +22,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "stdio.h"
+#include "PWMDriver\PWMDriver.h"
+#include "PWMCapturer\PWMCapturer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,6 +61,28 @@ static void MX_TIM3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+const uint16_t min_value_ms = 989;
+const uint16_t mid_value_ms = 1500;
+const uint16_t max_value_ms = 2013;
+const uint8_t measurement_error = 4;
+
+PWMCapturer channel1 = PWMCapturer(
+		&htim3,
+		1,
+		min_value_ms,
+		mid_value_ms,
+		max_value_ms,
+		measurement_error);
+
+void IcHandlerTim3(TIM_HandleTypeDef *htim)
+{
+	switch ((uint8_t)htim->Channel)
+	{
+		case HAL_TIM_ACTIVE_CHANNEL_1:
+			channel1.calculatePulseWidth();
+			break;
+	}
+}
 
 /* USER CODE END 0 */
 
@@ -93,14 +117,15 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
+  char str[10] = "Hello\n";
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  char str[] = "Hello\n";
+	  sprintf(str, "%d", (int)(channel1.getPulseWidth()));
 	  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
 	  HAL_Delay(500);
     /* USER CODE END WHILE */
