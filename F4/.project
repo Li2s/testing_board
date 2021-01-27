@@ -31,4 +31,11 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Libraries</name>
+			<type>2</type>
+			<location>E:/Projects/testing_board/F4/Libraries</location>
+		</link>
+	</linkedResources>
 </projectDescription>
