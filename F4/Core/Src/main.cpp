@@ -23,8 +23,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
-#include "PWMDriver\PWMDriver.h"
 #include "PWMCapturer\PWMCapturer.h"
+#include "Servo\Servo.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -73,23 +73,9 @@ PWMCapturer thr = PWMCapturer(
 		mid_value_ms,
 		max_value_ms,
 		measurement_error);
-PWMCapturer ail = PWMCapturer(
-		&htim3,
-		2,
-		min_value_ms,
-		mid_value_ms,
-		max_value_ms,
-		measurement_error);
 PWMCapturer elev = PWMCapturer(
 		&htim3,
-		3,
-		min_value_ms,
-		mid_value_ms,
-		max_value_ms,
-		measurement_error);
-PWMCapturer rud = PWMCapturer(
-		&htim3,
-		4,
+		2,
 		min_value_ms,
 		mid_value_ms,
 		max_value_ms,
@@ -103,13 +89,7 @@ void IcHandlerTim3(TIM_HandleTypeDef *htim)
 			thr.calculatePulseWidth();
 			break;
 		case HAL_TIM_ACTIVE_CHANNEL_2:
-			ail.calculatePulseWidth();
-			break;
-		case HAL_TIM_ACTIVE_CHANNEL_3:
 			elev.calculatePulseWidth();
-			break;
-		case HAL_TIM_ACTIVE_CHANNEL_4:
-			rud.calculatePulseWidth();
 			break;
 	}
 }
@@ -150,8 +130,11 @@ int main(void)
   HAL_TIM_RegisterCallback(&htim3, HAL_TIM_IC_CAPTURE_CB_ID, IcHandlerTim3);
   HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
   HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_2);
-  HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_3);
-  HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_4);
+
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
+
+  Servo thr_PWM_gen(htim3.Instance, 3), elev_PWM_gen(htim3.Instance, 4);
   char str[100] = "Hello\n";
   /* USER CODE END 2 */
 
@@ -159,9 +142,13 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  sprintf(str, "%d %d %d %d", (int)(thr.getPulseWidth()), (int)(ail.getPulseWidth()), (int)(elev.getPulseWidth()), (int)(rud.getPulseWidth()));
+	  thr_PWM_gen.setPositionMicroSeconds(thr.getPulseWidth());
+	  elev_PWM_gen.setPositionMicroSeconds(elev.getPulseWidth());
+
+	  sprintf(str, "%d %d\n", (int)(thr.getPulseWidth()), (int)(elev.getPulseWidth()));
 	  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
-	  HAL_Delay(500);
+
+	  HAL_Delay(50);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -227,6 +214,7 @@ static void MX_TIM3_Init(void)
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
   TIM_IC_InitTypeDef sConfigIC = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
 
   /* USER CODE BEGIN TIM3_Init 1 */
 
@@ -250,6 +238,10 @@ static void MX_TIM3_Init(void)
   {
     Error_Handler();
   }
+  if (HAL_TIM_PWM_Init(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
@@ -268,17 +260,22 @@ static void MX_TIM3_Init(void)
   {
     Error_Handler();
   }
-  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_3) != HAL_OK)
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
   {
     Error_Handler();
   }
-  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_4) != HAL_OK)
+  if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
   {
     Error_Handler();
   }
   /* USER CODE BEGIN TIM3_Init 2 */
 
   /* USER CODE END TIM3_Init 2 */
+  HAL_TIM_MspPostInit(&htim3);
 
 }
 
