@@ -25,6 +25,7 @@
 #include "stdio.h"
 #include "PWMCapturer\PWMCapturer.h"
 #include "Servo\Servo.h"
+#include "math.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -66,7 +67,7 @@ const uint16_t mid_value_ms = 1500;
 const uint16_t max_value_ms = 2013;
 const uint8_t measurement_error = 4;
 
-PWMCapturer thr = PWMCapturer(
+PWMCapturer aileron_servo_command = PWMCapturer(
 		&htim3,
 		1,
 		min_value_ms,
@@ -86,7 +87,7 @@ void IcHandlerTim3(TIM_HandleTypeDef *htim)
 	switch ((uint8_t)htim->Channel)
 	{
 		case HAL_TIM_ACTIVE_CHANNEL_1:
-			thr.calculatePulseWidth();
+			aileron_servo_command.calculatePulseWidth();
 			break;
 		case HAL_TIM_ACTIVE_CHANNEL_2:
 			elev.calculatePulseWidth();
@@ -134,21 +135,65 @@ int main(void)
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
 
-  Servo thr_PWM_gen(htim3.Instance, 3), elev_PWM_gen(htim3.Instance, 4);
+  Servo switch_PWM_gen(htim3.Instance, 3), aileron_PWM_gen(htim3.Instance, 4);
   char str[100] = "Hello\n";
+
+  uint32_t eps = 4; //delta between PWM measurements
+  uint8_t check1_flag = 0,
+		  check2_flag = 0,
+		  counter = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  thr_PWM_gen.setPositionMicroSeconds(thr.getPulseWidth());
-	  elev_PWM_gen.setPositionMicroSeconds(elev.getPulseWidth());
 
-	  sprintf(str, "%d %d\n", (int)(thr.getPulseWidth()), (int)(elev.getPulseWidth()));
-	  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
+	  if (counter < 1)
+	  {
+		  counter++;
+		  //test1 - direct mode aileron command check
+		  HAL_UART_Transmit(&huart1, (uint8_t*)"Test 1 in progress\n", sizeof(str), 1000);
 
-	  HAL_Delay(50);
+		  switch_PWM_gen.setPositionMicroSeconds(989);
+		  HAL_Delay(1000);
+
+		  aileron_PWM_gen.setPositionMicroSeconds(989);
+		  HAL_Delay(1000);
+		  if(abs((int)(aileron_servo_command.getPulseWidth() - 989)) < eps)
+			  check1_flag = 1;
+		  else
+			  check1_flag = 0;
+
+		  HAL_Delay(1000);
+		  aileron_PWM_gen.setPositionMicroSeconds(2013);
+		  HAL_Delay(1000);
+		  if(abs((int)(aileron_servo_command.getPulseWidth() - 2013)) < eps)
+			  check2_flag = 1;
+		  else
+			  check2_flag = 0;
+
+		  if (check1_flag*check2_flag == 1)
+			  HAL_UART_Transmit(&huart1, (uint8_t*)"Test 1 passed\n", sizeof(str), 1000);
+		  else
+			  HAL_UART_Transmit(&huart1, (uint8_t*)"Test 1 failed\n", sizeof(str), 1000);
+	  }
+	  else
+	  {
+		  HAL_UART_Transmit(&huart1, (uint8_t*)"Tests finished\n", sizeof(str), 1000);
+	  }
+
+
+
+
+
+	  //thr_PWM_gen.setPositionMicroSeconds(thr.getPulseWidth());
+	  //elev_PWM_gen.setPositionMicroSeconds(elev.getPulseWidth());
+
+	  //sprintf(str, "%d %d\n", (int)(thr.getPulseWidth()), (int)(elev.getPulseWidth()));
+	  //HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
+
+	  //HAL_Delay(50);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
