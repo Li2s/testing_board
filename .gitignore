@@ -35,7 +35,6 @@
 .metadata/
 RemoteSystemsTempFiles/
 BUILDS/
-F4/Debug/
 mbed-os/
 ESS/MDK-ARM/ESS/
 Baro/MDK-ARM/Baro/
