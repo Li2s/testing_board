@@ -35,7 +35,7 @@
 		<link>
 			<name>Libraries</name>
 			<type>2</type>
-			<location>C:/projects/STM32/testing_board/F4/Libraries</location>
+			<location>E:/Projects/testing_board/F4/Libraries</location>
 		</link>
 	</linkedResources>
 </projectDescription>

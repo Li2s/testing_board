@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
+#include "string.h"
 #include "PWMCapturer\PWMCapturer.h"
 #include "Servo\Servo.h"
 #include "math.h"
@@ -94,7 +95,6 @@ void IcHandlerTim3(TIM_HandleTypeDef *htim)
 			break;
 	}
 }
-
 /* USER CODE END 0 */
 
 /**
@@ -136,8 +136,8 @@ int main(void)
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
 
   Servo switch_PWM_gen(htim3.Instance, 3), aileron_PWM_gen(htim3.Instance, 4);
-  char str[100] = "Hello\n";
-
+  char str[100] = "\0";
+  char start_str[10] = "\0";
   uint32_t eps = 4; //delta between PWM measurements
   uint8_t check1_flag = 0,
 		  check2_flag = 0,
@@ -148,19 +148,27 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  HAL_UART_Receive (&huart1, (uint8_t*) start_str, sizeof(start_str), 1000);
 
-	  if (counter < 1)
+	  if (counter < 1 && start_str[0] == '1')
 	  {
 		  counter++;
 		  //test1 - direct mode aileron command check
-		  HAL_UART_Transmit(&huart1, (uint8_t*)"Test 1 in progress\n", sizeof(str), 1000);
+		  sprintf(str, "Test 1 in progress\n");
+		  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
+		  memset(str, '\0', sizeof(str));
 
 		  switch_PWM_gen.setPositionMicroSeconds(989);
 		  HAL_Delay(1000);
 
 		  aileron_PWM_gen.setPositionMicroSeconds(989);
 		  HAL_Delay(1000);
-		  if(abs((int)(aileron_servo_command.getPulseWidth() - 989)) < eps)
+
+		  sprintf(str, "%d\n", (int)aileron_servo_command.getPulseWidthDif());
+		  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
+		  memset(str, '\0', sizeof(str));
+
+		  if(abs((int)(aileron_servo_command.getPulseWidthDif() - 989)) < eps)
 			  check1_flag = 1;
 		  else
 			  check1_flag = 0;
@@ -168,19 +176,34 @@ int main(void)
 		  HAL_Delay(1000);
 		  aileron_PWM_gen.setPositionMicroSeconds(2013);
 		  HAL_Delay(1000);
-		  if(abs((int)(aileron_servo_command.getPulseWidth() - 2013)) < eps)
+		  sprintf(str, "%d\n", (int)aileron_servo_command.getPulseWidthDif());
+		  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
+		  memset(str, '\0', sizeof(str));
+		  if(abs((int)(aileron_servo_command.getPulseWidthDif() - 2013)) < eps)
 			  check2_flag = 1;
 		  else
 			  check2_flag = 0;
 
 		  if (check1_flag*check2_flag == 1)
-			  HAL_UART_Transmit(&huart1, (uint8_t*)"Test 1 passed\n", sizeof(str), 1000);
+		  {
+			  sprintf(str, "Test 1 passed\n");
+			  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
+			  memset(str, '\0', sizeof(str));
+		  }
 		  else
-			  HAL_UART_Transmit(&huart1, (uint8_t*)"Test 1 failed\n", sizeof(str), 1000);
+		  {
+			  sprintf(str, "Test 1 failed\n");
+			  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
+			  memset(str, '\0', sizeof(str));
+		  }
 	  }
 	  else
 	  {
-		  HAL_UART_Transmit(&huart1, (uint8_t*)"Tests finished\n", sizeof(str), 1000);
+		  if(counter == 1)
+		  {
+			  HAL_UART_Transmit(&huart1, (uint8_t*)"Tests finished\n", 100, 1000);
+			  counter++;
+		  }
 	  }
 
 
