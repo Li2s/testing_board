@@ -153,55 +153,76 @@ int main(void)
 	  if (counter < 1 && start_str[0] == '1')
 	  {
 		  counter++;
-		  //test1 - direct mode aileron command check
-		  sprintf(str, "Test 1 in progress\n");
+		  //---------------------------------------------------------------------
+		  //-------------test1 - direct mode aileron command check---------------
+		  //---------------------------------------------------------------------
+		  sprintf(str, "Test 1 - Direct mode aileron command check is in progress...\n");
 		  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
 		  memset(str, '\0', sizeof(str));
 
-		  switch_PWM_gen.setPositionMicroSeconds(989);
+		  switch_PWM_gen.setPositionMicroSeconds(989); // set the direct mode
 		  HAL_Delay(1000);
 
-		  aileron_PWM_gen.setPositionMicroSeconds(989);
+		  aileron_PWM_gen.setPositionMicroSeconds(989); // set the stick fully left
 		  HAL_Delay(1000);
 
-		  sprintf(str, "%d\n", (int)aileron_servo_command.getPulseWidthDif());
-		  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
-		  memset(str, '\0', sizeof(str));
 
-		  if(abs((int)(aileron_servo_command.getPulseWidthDif() - 989)) < eps)
+		  if(abs((int)(aileron_servo_command.getPulseWidthDif() - 989)) < eps) // check the command is equal to the stick
 			  check1_flag = 1;
 		  else
 			  check1_flag = 0;
 
-		  HAL_Delay(1000);
-		  aileron_PWM_gen.setPositionMicroSeconds(2013);
-		  HAL_Delay(1000);
-		  sprintf(str, "%d\n", (int)aileron_servo_command.getPulseWidthDif());
+		  sprintf(str, "Command from the stick = %d, command to the servo = %d\n", (int)989, (int)aileron_servo_command.getPulseWidthDif());
 		  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
 		  memset(str, '\0', sizeof(str));
-		  if(abs((int)(aileron_servo_command.getPulseWidthDif() - 2013)) < eps)
+
+		  aileron_PWM_gen.setPositionMicroSeconds(2013); // set the stick fully right
+		  HAL_Delay(1000);
+
+		  if(abs((int)(aileron_servo_command.getPulseWidthDif() - 2013)) < eps) // check the command is equal to the stick
 			  check2_flag = 1;
 		  else
 			  check2_flag = 0;
 
+		  sprintf(str, "Command from the stick = %d, command to the servo = %d\n", (int)2013, (int)aileron_servo_command.getPulseWidthDif());
+		  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
+		  memset(str, '\0', sizeof(str));
+
 		  if (check1_flag*check2_flag == 1)
 		  {
-			  sprintf(str, "Test 1 passed\n");
+			  sprintf(str, "Test 1 has passed\n");
 			  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
 			  memset(str, '\0', sizeof(str));
 		  }
 		  else
 		  {
-			  sprintf(str, "Test 1 failed\n");
+			  sprintf(str, "Test 1 has failed\n");
 			  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
 			  memset(str, '\0', sizeof(str));
 		  }
+
+
+		  //---------------------------------------------------------------------
+		  //------test2 - stab mode integral calc and saturation check ----------
+		  //---------------------------------------------------------------------
+
+		  sprintf(str, "Test 2 - Stab mode integral calc and saturation check is in progress...\n");
+		  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
+		  memset(str, '\0', sizeof(str));
+
+		  switch_PWM_gen.setPositionMicroSeconds(1500); // set the stab mode
+		  HAL_Delay(1000);
+
+		  aileron_PWM_gen.setPositionMicroSeconds(989); // set the stick fully left
+		  HAL_Delay(1000);
+		  //omega_zad_x = (0.234375*rc_input[AIL2] - 351.5625) = -120 deg/s;
+
 	  }
 	  else
 	  {
 		  if(counter == 1)
 		  {
-			  HAL_UART_Transmit(&huart1, (uint8_t*)"Tests finished\n", 100, 1000);
+			  HAL_UART_Transmit(&huart1, (uint8_t*)"Tests finished!\n", 100, 1000);
 			  counter++;
 		  }
 	  }

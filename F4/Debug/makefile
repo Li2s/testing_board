@@ -72,8 +72,8 @@ all: main-build
 main-build: testing_board.elf secondary-outputs
 
 # Tool invocations
-testing_board.elf: $(OBJS) $(USER_OBJS) E:\Projects\testing_board\F4\STM32F407VGTX_FLASH.ld
-	arm-none-eabi-g++ -o "testing_board.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\Projects\testing_board\F4\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="testing_board.map" -Wl,--gc-sections -static -L../Libraries --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+testing_board.elf: $(OBJS) $(USER_OBJS) C:\projects\STM32\testing_board\F4\STM32F407VGTX_FLASH.ld
+	arm-none-eabi-g++ -o "testing_board.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\projects\STM32\testing_board\F4\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="testing_board.map" -Wl,--gc-sections -static -L../Libraries --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
