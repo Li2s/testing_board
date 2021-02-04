@@ -153,9 +153,13 @@ int main(void)
 	  if (counter < 1 && start_str[0] == '1')
 	  {
 		  counter++;
+
 		  //---------------------------------------------------------------------
 		  //-------------test1 - direct mode aileron command check---------------
 		  //---------------------------------------------------------------------
+		  check1_flag = 0;
+		  check2_flag = 0;
+
 		  sprintf(str, "Test 1 - Direct mode aileron command check is in progress...\n");
 		  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
 		  memset(str, '\0', sizeof(str));
@@ -203,10 +207,12 @@ int main(void)
 
 
 		  //---------------------------------------------------------------------
-		  //------test2 - stab mode integral calc and saturation check ----------
+		  //------test2 - stab mode integral calc and limitation check ----------
 		  //---------------------------------------------------------------------
+		  check1_flag = 0;
+		  check2_flag = 0;
 
-		  sprintf(str, "Test 2 - Stab mode integral calc and saturation check is in progress...\n");
+		  sprintf(str, "Test 2 - Stab mode integral calc and limitation check is in progress...\n");
 		  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
 		  memset(str, '\0', sizeof(str));
 
@@ -214,8 +220,46 @@ int main(void)
 		  HAL_Delay(1000);
 
 		  aileron_PWM_gen.setPositionMicroSeconds(989); // set the stick fully left
-		  HAL_Delay(1000);
+		  HAL_Delay(995); // 1 second
+
 		  //omega_zad_x = (0.234375*rc_input[AIL2] - 351.5625) = -120 deg/s;
+		  //output[AIL1] = (int)(1500+0.4*omega_x_PI_reg.getOutput()) = 996;
+
+		  if(abs((int)(aileron_servo_command.getPulseWidthDif() - 116)) < 10*eps) // check the command is equal to the stick
+			  check1_flag = 1;
+		  else
+			  check1_flag = 0;
+
+
+		  sprintf(str, "Omega X command from the stick = %d deg/s, command to the servo = %d\n", (int)(-120),aileron_servo_command.getPulseWidthDif());
+		  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
+		  memset(str, '\0', sizeof(str));
+
+		  HAL_Delay(3000); // 3 more seconds
+
+		  if(abs((int)(aileron_servo_command.getPulseWidthDif() - 836)) < 10*eps) // check the integral is limited
+			  check2_flag = 1;
+		  else
+			  check2_flag = 0;
+
+		  sprintf(str, "Omega X command from the stick = %d deg/s, command to the servo = %d\n", (int)(-120),aileron_servo_command.getPulseWidthDif());
+		  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
+		  memset(str, '\0', sizeof(str));
+
+
+		  if (check1_flag*check2_flag == 1)
+		  {
+			  sprintf(str, "Test 2 has passed\n");
+			  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
+			  memset(str, '\0', sizeof(str));
+		  }
+		  else
+		  {
+			  sprintf(str, "Test 2 has failed\n");
+			  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
+			  memset(str, '\0', sizeof(str));
+		  }
+
 
 	  }
 	  else
@@ -224,6 +268,8 @@ int main(void)
 		  {
 			  HAL_UART_Transmit(&huart1, (uint8_t*)"Tests finished!\n", 100, 1000);
 			  counter++;
+			  switch_PWM_gen.setPositionMicroSeconds(989);
+			  aileron_PWM_gen.setPositionMicroSeconds(1500);
 		  }
 	  }
 
