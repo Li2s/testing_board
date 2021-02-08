@@ -200,6 +200,11 @@ int main(void)
 			  memset(str, '\0', sizeof(str));
 		  }
 
+		  //---------------------------Reset-------------------------------------
+
+		  aileron_PWM_gen.setPositionMicroSeconds(1500);
+		  HAL_Delay(3000);
+
 
 		  //---------------------------------------------------------------------
 		  //------test2 - stab mode integral calc and limitation check ----------
@@ -222,7 +227,7 @@ int main(void)
 		  //omega_zad_x = (0.234375*rc_input[AIL2] - 351.5625) = -120 deg/s;
 		  //output[AIL1] = (int)(1500+0.4*omega_x_PI_reg.getOutput()) = 996;
 
-		  if(abs((int)(aileron_servo_command.getPulseWidthDif() - 116)) < 10*eps) // check the command is equal to the stick
+		  if(abs((int)(aileron_servo_command.getPulseWidthDif() - 1115)) < 10*eps) // check the command is equal to the stick
 			  check1_flag = 1;
 		  else
 			  check1_flag = 0;
@@ -257,6 +262,11 @@ int main(void)
 			  memset(str, '\0', sizeof(str));
 		  }
 
+		  //---------------------------Reset-------------------------------------
+
+		  aileron_PWM_gen.setPositionMicroSeconds(1500);
+		  HAL_Delay(3000);
+
 
 	  }
 	  else
@@ -270,17 +280,6 @@ int main(void)
 		  }
 	  }
 
-
-
-
-
-	  //thr_PWM_gen.setPositionMicroSeconds(thr.getPulseWidth());
-	  //elev_PWM_gen.setPositionMicroSeconds(elev.getPulseWidth());
-
-	  //sprintf(str, "%d %d\n", (int)(thr.getPulseWidth()), (int)(elev.getPulseWidth()));
-	  //HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
-
-	  //HAL_Delay(50);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

@@ -1,6 +1,6 @@
 Libraries/Servo/Servo.o: \
- E:/Projects/testing_board/F4/Libraries/Servo/Servo.cpp \
- E:/Projects/testing_board/F4/Libraries/Servo/Servo.h \
+ C:/projects/STM32/testing_board/F4/Libraries/Servo/Servo.cpp \
+ C:/projects/STM32/testing_board/F4/Libraries/Servo/Servo.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -30,7 +30,7 @@ Libraries/Servo/Servo.o: \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 
-E:/Projects/testing_board/F4/Libraries/Servo/Servo.h:
+C:/projects/STM32/testing_board/F4/Libraries/Servo/Servo.h:
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 
