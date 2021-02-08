@@ -75,13 +75,6 @@ PWMCapturer aileron_servo_command = PWMCapturer(
 		mid_value_ms,
 		max_value_ms,
 		measurement_error);
-PWMCapturer elev = PWMCapturer(
-		&htim3,
-		2,
-		min_value_ms,
-		mid_value_ms,
-		max_value_ms,
-		measurement_error);
 
 void IcHandlerTim3(TIM_HandleTypeDef *htim)
 {
@@ -89,9 +82,6 @@ void IcHandlerTim3(TIM_HandleTypeDef *htim)
 	{
 		case HAL_TIM_ACTIVE_CHANNEL_1:
 			aileron_servo_command.calculatePulseWidth();
-			break;
-		case HAL_TIM_ACTIVE_CHANNEL_2:
-			elev.calculatePulseWidth();
 			break;
 	}
 }
@@ -130,12 +120,12 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_RegisterCallback(&htim3, HAL_TIM_IC_CAPTURE_CB_ID, IcHandlerTim3);
   HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
-  HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_2);
 
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
 
-  Servo switch_PWM_gen(htim3.Instance, 3), aileron_PWM_gen(htim3.Instance, 4);
+  Servo switch_PWM_gen(htim3.Instance, 3), aileron_PWM_gen(htim3.Instance, 4), arm_PWM_gen(htim3.Instance, 2);
   char str[100] = "\0";
   char start_str[10] = "\0";
   uint32_t eps = 4; //delta between PWM measurements
@@ -149,6 +139,10 @@ int main(void)
   while (1)
   {
 	  HAL_UART_Receive (&huart1, (uint8_t*) start_str, sizeof(start_str), 1000);
+
+	  arm_PWM_gen.setPositionMicroSeconds(989);//set disARM mode
+	  switch_PWM_gen.setPositionMicroSeconds(989);
+	  aileron_PWM_gen.setPositionMicroSeconds(1500);
 
 	  if (counter < 1 && start_str[0] == '1')
 	  {
@@ -179,6 +173,7 @@ int main(void)
 		  sprintf(str, "Command from the stick = %d, command to the servo = %d\n", (int)989, (int)aileron_servo_command.getPulseWidthDif());
 		  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
 		  memset(str, '\0', sizeof(str));
+		  HAL_Delay(1000);
 
 		  aileron_PWM_gen.setPositionMicroSeconds(2013); // set the stick fully right
 		  HAL_Delay(1000);
@@ -216,6 +211,8 @@ int main(void)
 		  HAL_UART_Transmit(&huart1, (uint8_t*) str, sizeof(str), 1000);
 		  memset(str, '\0', sizeof(str));
 
+		  arm_PWM_gen.setPositionMicroSeconds(2013);//set ARM mode
+		  HAL_Delay(1000);
 		  switch_PWM_gen.setPositionMicroSeconds(1500); // set the stab mode
 		  HAL_Delay(1000);
 
@@ -391,14 +388,14 @@ static void MX_TIM3_Init(void)
   {
     Error_Handler();
   }
-  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_2) != HAL_OK)
-  {
-    Error_Handler();
-  }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
   sConfigOC.Pulse = 0;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
+  {
+    Error_Handler();
+  }
   if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
   {
     Error_Handler();
