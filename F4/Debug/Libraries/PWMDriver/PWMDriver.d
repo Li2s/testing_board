@@ -1,6 +1,6 @@
 Libraries/PWMDriver/PWMDriver.o: \
- C:/projects/STM32/testing_board/F4/Libraries/PWMDriver/PWMDriver.cpp \
- C:/projects/STM32/testing_board/F4/Libraries/PWMDriver/PWMDriver.h \
+ E:/Projects/testing_board/F4/Libraries/PWMDriver/PWMDriver.cpp \
+ E:/Projects/testing_board/F4/Libraries/PWMDriver/PWMDriver.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -30,7 +30,7 @@ Libraries/PWMDriver/PWMDriver.o: \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 
-C:/projects/STM32/testing_board/F4/Libraries/PWMDriver/PWMDriver.h:
+E:/Projects/testing_board/F4/Libraries/PWMDriver/PWMDriver.h:
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 

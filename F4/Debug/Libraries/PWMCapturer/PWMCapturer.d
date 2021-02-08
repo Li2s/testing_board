@@ -1,6 +1,6 @@
 Libraries/PWMCapturer/PWMCapturer.o: \
- C:/projects/STM32/testing_board/F4/Libraries/PWMCapturer/PWMCapturer.cpp \
- C:/projects/STM32/testing_board/F4/Libraries/PWMCapturer/PWMCapturer.h \
+ E:/Projects/testing_board/F4/Libraries/PWMCapturer/PWMCapturer.cpp \
+ E:/Projects/testing_board/F4/Libraries/PWMCapturer/PWMCapturer.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -30,7 +30,7 @@ Libraries/PWMCapturer/PWMCapturer.o: \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 
-C:/projects/STM32/testing_board/F4/Libraries/PWMCapturer/PWMCapturer.h:
+E:/Projects/testing_board/F4/Libraries/PWMCapturer/PWMCapturer.h:
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 
